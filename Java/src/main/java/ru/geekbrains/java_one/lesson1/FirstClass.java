@@ -9,13 +9,13 @@ public class FirstClass {
 
     //Задание 2
     private static boolean isWithinNumbers(int a, int b) {
-        return ((a + b) >= 10 && (a + b) <= 20);
+        int sum = a + b;
+        return  sum <= 20 && sum >= 10;
     }
 
     //Задание 3
-    private static void isPositiveOrNegativeNum(int num) {
-        boolean result = (num >= 0);
-        System.out.println(result);
+    private static boolean isPositive(int num) {
+        return num >= 0;
     }
 
     //Задание 4
@@ -24,13 +24,13 @@ public class FirstClass {
     }
 
     //Задание *
-    private static boolean isLeapNonleapYears(int year) {
-        return  (((year % 4) == 0 && (year % 100) != 0) || ((year) % 4 == 0 && ((year % 100) == 0) && ((year % 400) == 0)));
+    private static boolean isLeapYears(int year) {
+        return  (year % 4 == 0) && (year % 100 != 0) || (year % 400 == 0);
     }
 
     public static void main(String[] args) {
         System.out.println(printHello("Александр"));
-        System.out.println(isLeapNonleapYears(2020));
+        System.out.println(isLeapYears(2020));
 
     }
 }
