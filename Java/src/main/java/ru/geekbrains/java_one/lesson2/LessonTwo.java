@@ -5,34 +5,31 @@ import java.util.Arrays;
 public class LessonTwo {
 
     //#1
-    public static int[] replacingArray(int[] array) {
+    public static void replacingArray(int[] array) {
         for (int i = 0; i < array.length; i++) {
             array[i] = (array[i] == 0) ? 1 : 0;
         }
-        return array;
     }
 
     //#2
-    public static int[] fillArray(int[] array) {
+    public static void fillArray(int[] array) {
         for (int i = 0; i < array.length; i++) {
             array[i] = i * 3 + 1;
         }
-        return array;
     }
 
     //#3
-    public static int[] arrayMultiplication(int[] array) {
+    public static void arrayMultiplication(int[] array) {
         for (int i = 0; i < array.length; i++) {
-            array[i] = (array[i] < 6) ? array[i] * 2 : array[i];
+            if (array[i] < 6) array[i] *= 2;
         }
-        return array;
     }
 
     //#4
     public static int maxNum(int[] array) {
         int maxNum = array[0];
         for (int i = 1; i < array.length; i++) {
-            maxNum = (maxNum < array[i]) ? array[i] : maxNum;
+            if (maxNum < array[i]) maxNum = array[i];
         }
         return maxNum;
     }
@@ -41,7 +38,7 @@ public class LessonTwo {
     public static int minNum(int[] array) {
         int minNum = array[0];
         for (int i = 1; i < array.length; i++) {
-            minNum = (minNum > array[i]) ? array[i] : minNum;
+            if (minNum > array[i]) minNum = array[i];
         }
         return minNum;
     }
@@ -108,15 +105,18 @@ public class LessonTwo {
 
         //Test method replacingArray
         int[] array = {1, 1, 0, 0, 1, 0, 1, 1, 0, 0 };
-        System.out.println(Arrays.toString(replacingArray(array)));
+        replacingArray(array);
+        System.out.println(Arrays.toString(array));
 
         //Test method fillArray
         int[] arrEight = new int[8];
-        System.out.println(Arrays.toString(fillArray(arrEight)));
+        fillArray(arrEight);
+        System.out.println(Arrays.toString(arrEight));
 
         //Test method arrayMultiplication
         int[] arrayMult = {1, 5, 3, 2, 11, 4, 5, 2, 4, 8, 9, 1};
-        System.out.println(Arrays.toString(arrayMultiplication(arrayMult)));
+        arrayMultiplication(arrayMult);
+        System.out.println(Arrays.toString(arrayMult));
         //Задача #4
         System.out.println(maxNum(arrayMult));
         System.out.println(minNum(arrayMult));
