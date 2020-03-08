@@ -76,7 +76,7 @@ public class LessonTwo {
     }
 
     //#8
-    public static int[] offsetArray (int[] array, int n) {
+    public static void offsetArray (int[] array, int n) {
         n = Math.abs(n) % array.length;
         //shift right
         if (n > 0) {
@@ -98,7 +98,6 @@ public class LessonTwo {
                 }
             }
         }
-        return array;
     }
 
     public static void main(String[] args) {
@@ -135,7 +134,8 @@ public class LessonTwo {
 
         //Test methods offsetArray, offsetCopyArray
         int[] arrayOffset = {1, 2, 3, 4};
-        System.out.println(Arrays.toString(offsetArray(arrayOffset, 1)));
+        offsetArray(arrayOffset, 1);
+        System.out.println(Arrays.toString(arrayOffset));
         System.out.println(Arrays.toString(offsetCopyArray(arrayOffset, -2)));
 
     }
