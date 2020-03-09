@@ -7,7 +7,7 @@ public class LessonTwo {
     //#1
     public static void replacingArray(int[] array) {
         for (int i = 0; i < array.length; i++) {
-            array[i] = (array[i] == 0) ? 1 : 0;
+            array[i] = (array[i] == 0) ? 1 : 0; //a[i] + 1 % 2
         }
     }
 
@@ -58,7 +58,7 @@ public class LessonTwo {
         return false;
     }
 
-    //#7
+    //#7 переписать без повторения кода
     public static int[] offsetCopyArray(int[] array, int n) {
         int[] newArray = new int[array.length];
         n = Math.abs(n) % array.length;
@@ -75,7 +75,7 @@ public class LessonTwo {
         return newArray;
     }
 
-    //#8
+    //#8 переписать без повторения кода
     public static void offsetArray (int[] array, int n) {
         n = Math.abs(n) % array.length;
         //shift right
@@ -120,7 +120,7 @@ public class LessonTwo {
         System.out.println(maxNum(arrayMult));
         System.out.println(minNum(arrayMult));
 
-        //Задача #5
+        //Задача #5 переписать т.к надо две диагонали заполнять 1
         int[][] arrSquare = new int[15][15];
         for (int y = 0; y < arrSquare.length; y++) {
             for (int x = 0; x < arrSquare[y].length; x++) {
