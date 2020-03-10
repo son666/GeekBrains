@@ -43,6 +43,14 @@ public class LessonTwo {
         return minNum;
     }
 
+    //#5
+    public static void fillArray(int[][] array) {
+        for (int i = 0; i < array.length; i++) {
+            array[i][i] = 1;
+            array[i][array.length - 1 - i] = 1;
+        }
+    }
+
     //#6
     public static boolean isCheckBalance(int[] array) {
         int sumLeft = 0;
@@ -58,7 +66,7 @@ public class LessonTwo {
         return false;
     }
 
-    //#7 переписать без повторения кода
+    //#7
     public static int[] offsetCopyArray(int[] array, int n) {
         int[] newArray = new int[array.length];
         n = Math.abs(n) % array.length;
@@ -75,29 +83,21 @@ public class LessonTwo {
         return newArray;
     }
 
-    //#8 переписать без повторения кода
+    //#8 сдвиг влево на n == сдвигу впрово на на array.lenght - n
     public static void offsetArray (int[] array, int n) {
-        n = Math.abs(n) % array.length;
-        //shift right
-        if (n > 0) {
-            for (int i = 0; i < n; i++) {
-                for (int j = array.length - 2; j >= 0 ; j--) {
-                    int tmp = array[j];
-                    array[j] = array[j + 1];
-                    array[j + 1] = tmp;
-                }
+        boolean sign = n < 0;
+        if (sign) n = -n;
+        n %= array.length;
+
+        int nextIndex = (sign) ? array.length - n : n;
+        for (int i = 0; i < nextIndex; i++) {
+            for (int j = 1; j < array.length; j++) {
+                int tmp = array[j];
+                array[j] = array[j - 1];
+                array[j - 1] = tmp;
             }
         }
-        //shift left
-        else {
-            for (int i = 0; i < n; i++) {
-                for (int j = 1; j < array.length ; j++) {
-                    int tmp = array[j];
-                    array[j] = array[j - 1];
-                    array[j - 1] = tmp;
-                }
-            }
-        }
+
     }
 
     public static void main(String[] args) {
@@ -120,11 +120,12 @@ public class LessonTwo {
         System.out.println(maxNum(arrayMult));
         System.out.println(minNum(arrayMult));
 
-        //Задача #5 переписать т.к надо две диагонали заполнять 1
-        int[][] arrSquare = new int[15][15];
+        //Test method fillArray
+        int[][] arrSquare = new int[10][10];
+        fillArray(arrSquare);
         for (int y = 0; y < arrSquare.length; y++) {
             for (int x = 0; x < arrSquare[y].length; x++) {
-                System.out.printf("%4d", (x == y) ? 1 : x);
+                System.out.printf("%4d", arrSquare[y][x]);
             }
             System.out.println();
         }
