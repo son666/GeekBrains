@@ -13,11 +13,13 @@ public class TicTacToe {
 
     private static int fieldSizeX;
     private static int fieldSizeY;
+    private static int win; //Количество подряд знаков для победы
     private static char[][] field;
 
     private static void initField() {
         fieldSizeX = 3;
         fieldSizeY = 3;
+        win = 3;
         field = new char[fieldSizeY][fieldSizeX];
         for (int y = 0; y < fieldSizeY; y++) {
             for (int x = 0; x < fieldSizeX; x++) {
@@ -56,13 +58,41 @@ public class TicTacToe {
     }
 
     private static void aiTurn() {
-        int x;
-        int y;
-        do {
-            x = RANDOM.nextInt(fieldSizeX);
-            y = RANDOM.nextInt(fieldSizeY);
-        } while (!isEmptyCell(x, y));
-        field[y][x] = DOT_AI;
+        if (checkWin(DOT_AI, win-1)) {
+            for (int y = 0; y < fieldSizeY; y++) {
+                for (int x = 0; x < fieldSizeX; x++) {
+                    if (field[y][x] == DOT_EMPTY) {
+                        field[y][x] = DOT_AI;
+                        if (checkWin(DOT_AI, win)) {
+                            return;
+                        }
+                        else { field[y][x] = DOT_EMPTY; }
+                    }
+                }
+            }
+        } else if (checkWin(DOT_HUMAN, win-1)) {
+            for (int y = 0; y < fieldSizeY; y++) {
+                for (int x = 0; x < fieldSizeX; x++) {
+                    if (field[y][x] == DOT_EMPTY) {
+                        field[y][x] = DOT_HUMAN;
+                        if (checkWin(DOT_HUMAN, win)) {
+                            field[y][x] = DOT_AI;
+                            return;
+                        }
+                        else { field[y][x] = DOT_EMPTY; }
+                    }
+                }
+            }
+        }
+        else {
+            int x;
+            int y;
+            do {
+                x = RANDOM.nextInt(fieldSizeX);
+                y = RANDOM.nextInt(fieldSizeY);
+            } while (!isEmptyCell(x, y));
+            field[y][x] = DOT_AI;
+        }
     }
 
     private static boolean isFieldFull() {
@@ -75,9 +105,26 @@ public class TicTacToe {
     }
 
     //TODO Переписать метод!!!
-    private static boolean checkWin(char c) {
+    private static boolean checkWin(char c, int win) {
+        int leftDiagonal = 0;
+        int rightDiagonal = 0;
+        for (int y = 0; y < fieldSizeY; y++) {
+            int countY = 0;
+            int countX = 0;
+            for (int x = 0; x < fieldSizeX; x++) {
+                if (field[y][x] == c) { countX++; }
+                else if (x != fieldSizeX - 1) { countX = 0; }
+                if (field[x][y] == c) { countY++; }
+                else if (x != fieldSizeX - 1) { countY = 0; }
 
-        return false;
+            }
+            if (countX >= win || countY >= win) return true;
+            if (field[y][y] == c) { leftDiagonal++; }
+            else if (y != fieldSizeY - 1) { leftDiagonal = 0; }
+            if (field[y][field.length - 1 - y] == c) { rightDiagonal++; }
+            else if (y != fieldSizeY - 1) { rightDiagonal = 0; }
+        }
+        return (leftDiagonal >= win || rightDiagonal >= win);
     }
 
     private static void playOneRound() {
@@ -86,7 +133,7 @@ public class TicTacToe {
         while (true) {
             humanTurn();
             printField();
-            if (checkWin(DOT_HUMAN)) {
+            if (checkWin(DOT_HUMAN, win)) {
                 System.out.println("Выиграл игрок!");
                 break;
             }
@@ -96,7 +143,7 @@ public class TicTacToe {
             }
             aiTurn();
             printField();
-            if (checkWin(DOT_AI)) {
+            if (checkWin(DOT_AI, win)) {
                 System.out.println("Выиграл компьютер!");
                 break;
             }
