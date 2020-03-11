@@ -17,9 +17,9 @@ public class TicTacToe {
     private static char[][] field;
 
     private static void initField() {
-        fieldSizeX = 3;
-        fieldSizeY = 3;
-        win = 3;
+        fieldSizeX = 5;
+        fieldSizeY = 5;
+        win = 4;
         field = new char[fieldSizeY][fieldSizeX];
         for (int y = 0; y < fieldSizeY; y++) {
             for (int x = 0; x < fieldSizeX; x++) {
@@ -29,7 +29,7 @@ public class TicTacToe {
     }
 
     private static void printField() {
-        System.out.println("-----------");
+        System.out.println(String.format("%" + (fieldSizeX * 4) + "s", "").replace(' ', '-'));
         for (int y = 0; y < fieldSizeY; y++) {
             for (int x = 0; x < fieldSizeX; x++) {
                 System.out.print(field[y][x] + " | ");
@@ -58,13 +58,26 @@ public class TicTacToe {
     }
 
     private static void aiTurn() {
+        if (!isAiTurn()) {
+            int x;
+            int y;
+            do {
+                x = RANDOM.nextInt(fieldSizeX);
+                y = RANDOM.nextInt(fieldSizeY);
+            } while (!isEmptyCell(x, y));
+            field[y][x] = DOT_AI;
+        }
+    }
+
+    //Попытка AI выиграть или блокировать человека
+    private static boolean isAiTurn() {
         if (checkWin(DOT_AI, win-1)) {
             for (int y = 0; y < fieldSizeY; y++) {
                 for (int x = 0; x < fieldSizeX; x++) {
                     if (field[y][x] == DOT_EMPTY) {
                         field[y][x] = DOT_AI;
                         if (checkWin(DOT_AI, win)) {
-                            return;
+                            return true;
                         }
                         else { field[y][x] = DOT_EMPTY; }
                     }
@@ -77,22 +90,14 @@ public class TicTacToe {
                         field[y][x] = DOT_HUMAN;
                         if (checkWin(DOT_HUMAN, win)) {
                             field[y][x] = DOT_AI;
-                            return;
+                            return true;
                         }
                         else { field[y][x] = DOT_EMPTY; }
                     }
                 }
             }
         }
-        else {
-            int x;
-            int y;
-            do {
-                x = RANDOM.nextInt(fieldSizeX);
-                y = RANDOM.nextInt(fieldSizeY);
-            } while (!isEmptyCell(x, y));
-            field[y][x] = DOT_AI;
-        }
+        return false;
     }
 
     private static boolean isFieldFull() {
@@ -104,27 +109,45 @@ public class TicTacToe {
         return true;
     }
 
-    //TODO Переписать метод!!!
+    //Проверка победы
     private static boolean checkWin(char c, int win) {
         int leftDiagonal = 0;
+        int maxLeftDiagonal = 0;
         int rightDiagonal = 0;
+        int maxRightDiagonal = 0;
         for (int y = 0; y < fieldSizeY; y++) {
             int countY = 0;
             int countX = 0;
+            int maxCountX = 0;
+            int maxCountY = 0;
             for (int x = 0; x < fieldSizeX; x++) {
+                //Поиск совпадений по строкам
                 if (field[y][x] == c) { countX++; }
-                else if (x != fieldSizeX - 1) { countX = 0; }
+                if (maxCountX < countX) {
+                    maxCountX = countX;
+                } else { countX = 0; }
+                //Поиск совпадений по столбцам
                 if (field[x][y] == c) { countY++; }
-                else if (x != fieldSizeX - 1) { countY = 0; }
+                if (maxCountY < countY) {
+                    maxCountY = countY;
+                } else { countY = 0; }
 
+                if (maxCountX >= win || maxCountY >= win) return true;
             }
-            if (countX >= win || countY >= win) return true;
+            //Поиск совпадений по левой диагонали
             if (field[y][y] == c) { leftDiagonal++; }
-            else if (y != fieldSizeY - 1) { leftDiagonal = 0; }
+            if (maxLeftDiagonal < leftDiagonal) {
+                maxLeftDiagonal = leftDiagonal;
+            } else { leftDiagonal = 0; }
+            //Поиск совпадений по правой диагонали
             if (field[y][field.length - 1 - y] == c) { rightDiagonal++; }
-            else if (y != fieldSizeY - 1) { rightDiagonal = 0; }
+            if (maxLeftDiagonal < rightDiagonal) {
+                maxRightDiagonal = rightDiagonal;
+            } else { rightDiagonal = 0; }
+
+            if (maxLeftDiagonal >= win || maxRightDiagonal >= win) return true;
         }
-        return (leftDiagonal >= win || rightDiagonal >= win);
+        return false;
     }
 
     private static void playOneRound() {
@@ -155,11 +178,11 @@ public class TicTacToe {
     }
 
     public static void main(String[] args) {
-//        while (true) {
+        while (true) {
         playOneRound();
-//            System.out.println("Play again?");
-//            if (SCANNER.next().equals("no"))
-//                break;
-//        }
+        System.out.println("Play again?");
+        if (SCANNER.next().equals("no"))
+            break;
+        }
     }
 }
