@@ -17,9 +17,9 @@ public class TicTacToe {
     private static char[][] field;
 
     private static void initField() {
-        fieldSizeX = 3;
-        fieldSizeY = 3;
-        win = 3;
+        fieldSizeX = 5;
+        fieldSizeY = 5;
+        win = 4;
         field = new char[fieldSizeY][fieldSizeX];
         for (int y = 0; y < fieldSizeY; y++) {
             for (int x = 0; x < fieldSizeX; x++) {
@@ -117,53 +117,41 @@ public class TicTacToe {
 
     //Проверка победы
     private static boolean checkWin(char c, int win) {
-        int countRow = countXY(true, c);
-        int countColumn = countXY(false, c);
-        if (countRow >= win || countColumn >= win) return true;
+        return (countXY(true, c, win) || countXY(false, c, win) ||
+                countDiagonal(true, c, win) || countDiagonal(false, c, win));
 
-        int countDiagonalLeft = countDiagonal(true, c);
-        int countDiagonalRight = countDiagonal(false, c);
-        if (countDiagonalLeft >= win || countDiagonalRight >= win) return true;
-
-        return false;
     }
 
     //Поиск совпадений по строкам или столбцам
-    private static int countXY(boolean isRow, char c) {
-        int count = 0;
-        int maxCount = 0;
+    private static boolean countXY(boolean isRow, char c, int win) {
+        int count;
         for (int y = 0; y < fieldSizeY; y++) {
             count = 0;
             for (int x = 0; x < fieldSizeX; x++) {
                 if (isRow) {
                     if (field[y][x] == c) { count++; }
-                    if (maxCount < count) {
-                        maxCount = count;
-                    } else { count = 0; }
+                    else { count = 0; }
                 } else {
                     if (field[x][y] == c) { count++; }
-                    if (maxCount < count) {
-                        maxCount = count;
-                    } else { count = 0; }
+                    else { count = 0; }
                 }
+                if (count >= win) return true;
             }
         }
-        return maxCount;
+        return false;
     }
 
     //Поиск совпадений по диагоналям
-    private static int countDiagonal(boolean isLeftDiagonal, char c) {
+    private static boolean countDiagonal(boolean isLeftDiagonal, char c, int win) {
         int countDiagonal = 0;
-        int maxCountDiagonal = 0;
         int direction;
         for (int y = 0; y < fieldSizeY; y++) {
             direction = (isLeftDiagonal) ? y : field.length - 1 - y;
                 if (field[y][direction] == c) { countDiagonal++; }
-                if (maxCountDiagonal < countDiagonal) {
-                    maxCountDiagonal = countDiagonal;
-                } else { countDiagonal = 0; }
+                else { countDiagonal = 0; }
+            if (countDiagonal >= win) return true;
             }
-        return maxCountDiagonal;
+        return false;
         }
 
     private static void playOneRound() {
