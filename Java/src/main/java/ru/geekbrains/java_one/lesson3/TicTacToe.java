@@ -117,42 +117,35 @@ public class TicTacToe {
 
     //Проверка победы
     private static boolean checkWin(char c, int win) {
-        return (countXY(true, c, win) || countXY(false, c, win) ||
-                countDiagonal(true, c, win) || countDiagonal(false, c, win));
-
+        for (int y = 0; y < field.length; y++) {
+            for (int x = 0; x <= (field[y].length - win); x++) {
+                if (countXY(true, y, x, c, win) ||
+                    countXY(false, x, y, c, win) ||
+                    countDiagonal(true, x, c, win) ||
+                    countDiagonal(false, x, c, win))
+                    return true;
+            }
+        }
+        return false;
     }
 
     //Поиск совпадений по строкам или столбцам
-    private static boolean countXY(boolean isRow, char c, int win) {
-        int count;
-        for (int y = 0; y < fieldSizeY; y++) {
-            count = 0;
-            for (int x = 0; x < fieldSizeX; x++) {
-                if (isRow) {
-                    if (field[y][x] == c) { count++; }
-                    else { count = 0; }
-                } else {
-                    if (field[x][y] == c) { count++; }
-                    else { count = 0; }
-                }
-                if (count >= win) return true;
+    private static boolean countXY(boolean isRow, int y, int x, char c, int win) {
+            int count = 0;
+            for (int j = 0; j < win; j++) {
+                    if (((isRow) ? field[y][x + j] : field[y + j][x]) == c) count++;
             }
-        }
-        return false;
+        return count == win;
     }
 
     //Поиск совпадений по диагоналям
-    private static boolean countDiagonal(boolean isLeftDiagonal, char c, int win) {
-        int countDiagonal = 0;
-        int direction;
-        for (int y = 0; y < fieldSizeY; y++) {
-            direction = (isLeftDiagonal) ? y : field.length - 1 - y;
-                if (field[y][direction] == c) { countDiagonal++; }
-                else { countDiagonal = 0; }
-            if (countDiagonal >= win) return true;
-            }
-        return false;
+    private static boolean countDiagonal(boolean isLeftDiagonal, int x, char c, int win) {
+        int count = 0;
+        for (int j = 0; j < win; j++) {
+            if (((isLeftDiagonal) ? field[x + j][x + j] : field[x + j][field.length - 1 - (x + j)]) == c) count++;
         }
+        return count == win;
+    }
 
     private static void playOneRound() {
         initField();
