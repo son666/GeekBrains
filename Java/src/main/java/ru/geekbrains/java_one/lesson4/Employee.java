@@ -3,6 +3,8 @@ package ru.geekbrains.java_one.lesson4;
 import java.math.BigDecimal;
 
 public class Employee {
+    private static int id;
+    private int number;
     private String surname;
     private BigDecimal salary;
     private int age;
@@ -13,6 +15,7 @@ public class Employee {
         this.salary = salary;
         this.age = age;
         this.position = position;
+        this.number = ++id;
     }
 
     public String getSurname() {
@@ -35,11 +38,15 @@ public class Employee {
         return position;
     }
 
+    public int getNumber() {
+        return number;
+    }
+
+    //4 Вывести при помощи методов из пункта 3 ФИО и должность
     @Override
     public String toString() {
         return "Фамилия: " + getSurname() + "\n" +
                "Должность: " + getPosition() + "\n" +
-               "Зарплата: " + getSalary() + "\n" +
                 "---------------------------------";
     }
 }
