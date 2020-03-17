@@ -1,5 +1,8 @@
 package ru.geekbrains.java_one.lesson5;
 
+import ru.geekbrains.java_one.lesson5.abstractclass.Animal;
+import ru.geekbrains.java_one.lesson5.abstractclass.Waterfowl;
+
 public class Main {
 
     private static void printActionRun(Animal[] arrayAnimals, int distance) {
@@ -13,12 +16,9 @@ public class Main {
     private static void printActionSail(Animal[] arrayAnimals, int distance) {
         System.out.println("Заплыв на дистанцию " + distance + "м.");
         for (Animal animal : arrayAnimals) {
-            if (animal instanceof Dog) {
-                Dog dog = (Dog) animal;
-                System.out.println(animal + " --> " + ((dog.sail(distance)) ? "Проплыл!" : "Не проплыл!"));
-            } else if (animal instanceof Horse) {
-                Horse horse = (Horse) animal;
-                System.out.println(animal + " --> " + ((horse.sail(distance)) ? "Проплыл!" : "Не проплыл!"));
+            if (animal instanceof Waterfowl) {
+                Waterfowl animalWaterfowl = (Waterfowl) animal;
+                System.out.println(animal + " --> " + ((animalWaterfowl.sail(distance)) ? "Проплыл!" : "Не проплыл!"));
             } else {
                 System.out.println(animal + " --> " + "Не умеет плавать!");
             }
@@ -41,7 +41,7 @@ public class Main {
                 new Cat("Кот1", 200, 2),
                 new Cat("Кот2", 150, 2.5),
                 new Horse("Лошадь1", 1500, 100, 3),
-                new Horse("Лошадь2", 1000, 150, 3.5),
+                new Horse("Лошадь2", 900, 150, 3.5),
                 new Bird("Птица1", 5, 0.2),
                 new Bird("Птица2", 10, 0.5)
         };

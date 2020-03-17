@@ -1,4 +1,4 @@
-package ru.geekbrains.java_one.lesson5;
+package ru.geekbrains.java_one.lesson5.abstractclass;
 
 /*
 1. Создать классы Собака, Лошадь, Птица и Кот с наследованием от класса Животное.
@@ -12,29 +12,20 @@ package ru.geekbrains.java_one.lesson5;
 */
 
 public abstract class Animal {
-
     private String name;
     private int distanceRun;
-    protected int distanceSail;
     private double heightJump;
 
     public Animal(String name, int distanceRun, double heightJump) {
-        this(name, distanceRun, 0, heightJump);
-    }
-
-    public Animal(String name, int distanceRun, int distanceSail, double heightJump) {
         this.name = name;
         this.distanceRun = distanceRun;
-        this.distanceSail = distanceSail;
         this.heightJump = heightJump;
     }
 
-    //бежать
     public boolean run(int distanceRun) {
         return this.distanceRun >= distanceRun;
     }
 
-    //перепрыгивать препятствие
     public boolean jump(double heightJump) {
         return this.heightJump >= heightJump;
     }
@@ -43,7 +34,6 @@ public abstract class Animal {
     public String toString() {
         return "Имя: " + name + ", " +
                 "Run max: " + distanceRun + ", " +
-                "Sail max: " + distanceSail + ", " +
                 "Jump max: " + heightJump;
     }
 }
