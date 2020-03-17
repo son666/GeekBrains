@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public class Main {
 
-    public static void salaryIncrease (Employee[] arrayEmployee, int age, BigDecimal increaseSalary) {
+    public static void salaryIncrease(Employee[] arrayEmployee, int age, BigDecimal increaseSalary) {
         for (Employee employee : arrayEmployee) {
             if (employee.getAge() > age) {
                 BigDecimal salary = employee.getSalary();
@@ -13,7 +13,23 @@ public class Main {
         }
     }
 
-    public static void printEmployees (Employee[] arrayEmployee, int age) {
+    public static double absEmployeesAge(Employee[] arrayEmployee) {
+        int sumAge = 0;
+        for (int i = 0; i < arrayEmployee.length; i++) {
+            sumAge += arrayEmployee[i].getAge();
+        }
+        return sumAge / arrayEmployee.length;
+    }
+
+    public static BigDecimal absEmployeesSalary(Employee[] arrayEmployee) {
+        BigDecimal sumSalary = new BigDecimal(0);
+        for (int i = 0; i < arrayEmployee.length; i++) {
+            sumSalary = sumSalary.add(arrayEmployee[i].getSalary());
+        }
+        return sumSalary.divide(new BigDecimal(arrayEmployee.length));
+    }
+
+    public static void printEmployees(Employee[] arrayEmployee, int age) {
         for (Employee employee : arrayEmployee) {
             if (employee.getAge() > age) System.out.println(employee);
         }
@@ -33,14 +49,8 @@ public class Main {
         salaryIncrease(arrEmployee, 45, new BigDecimal(5000));
 
         //#7
-        int sumAge = 0;
-        BigDecimal sumSalary = new BigDecimal(0);
-        for (int i = 0; i < arrEmployee.length; i++) {
-            sumAge += arrEmployee[i].getAge();
-            sumSalary = sumSalary.add(arrEmployee[i].getSalary());
-        }
-        System.out.println("Среднее по зарплате " + sumSalary.divide(new BigDecimal(arrEmployee.length)));
-        System.out.println("Среднее по возрасту " + sumAge / arrEmployee.length);
+        System.out.println("Среднее по зарплате " + absEmployeesSalary(arrEmployee));
+        System.out.println("Среднее по возрасту " + absEmployeesAge(arrEmployee));
 
     }
 }
