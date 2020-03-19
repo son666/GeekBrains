@@ -1,7 +1,6 @@
 package ru.geekbrains.java_one.lesson5;
 
 import ru.geekbrains.java_one.lesson5.abstractclass.Animal;
-import ru.geekbrains.java_one.lesson5.abstractclass.Waterfowl;
 
 public class Main {
 
@@ -16,13 +15,8 @@ public class Main {
     private static void printActionSail(Animal[] arrayAnimals, int distance) {
         System.out.println("Заплыв на дистанцию " + distance + "м.");
         for (Animal animal : arrayAnimals) {
-            if (animal instanceof Waterfowl) {
-                Waterfowl animalWaterfowl = (Waterfowl) animal;
-                System.out.println(animal + " --> " + ((animalWaterfowl.sail(distance)) ? "Проплыл!" : "Не проплыл!"));
-            } else {
-                System.out.println(animal + " --> " + "Не умеет плавать!");
+                System.out.println(animal + " --> " + ((animal.sail(distance)) ? "Проплыл!" : "Не проплыл!"));
             }
-        }
         System.out.println(String.format("%40s", "").replaceAll("", "-"));
     }
 
@@ -46,8 +40,8 @@ public class Main {
                 new Bird("Птица2", 10, 0.5)
         };
 
-        printActionRun(animals, 450);
-        printActionJump(animals,0.5);
+//        printActionRun(animals, 450);
+//        printActionJump(animals,0.5);
         printActionSail(animals,10);
 
     }

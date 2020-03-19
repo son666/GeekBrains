@@ -13,27 +13,19 @@ package ru.geekbrains.java_one.lesson5.abstractclass;
 
 public abstract class Animal {
     private String name;
-    private int distanceRun;
-    private double heightJump;
 
-    public Animal(String name, int distanceRun, double heightJump) {
+    public Animal(String name) {
         this.name = name;
-        this.distanceRun = distanceRun;
-        this.heightJump = heightJump;
     }
 
-    public boolean run(int distanceRun) {
-        return this.distanceRun >= distanceRun;
-    }
+    public abstract boolean run(int distanceRun);
 
-    public boolean jump(double heightJump) {
-        return this.heightJump >= heightJump;
-    }
+    public abstract boolean sail(int distanceSail);
+
+    public abstract boolean jump(double heightJump);
 
     @Override
     public String toString() {
-        return "Имя: " + name + ", " +
-                "Run max: " + distanceRun + ", " +
-                "Jump max: " + heightJump;
+        return "Имя: " + name;
     }
 }
