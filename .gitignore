@@ -1,3 +1,7 @@
+*.class
 *.orig
+.idea
+out
+lib
 *.iml
-*.idea
+log
