@@ -14,9 +14,15 @@ public class Main {
 
     private static void printActionSail(Animal[] arrayAnimals, int distance) {
         System.out.println("Заплыв на дистанцию " + distance + "м.");
+        String resultSail = "";
         for (Animal animal : arrayAnimals) {
-                System.out.println(animal + " --> " + ((animal.sail(distance)) ? "Проплыл!" : "Не проплыл!"));
+            if (animal.sail(distance) != Animal.SWIM_WTF) {
+                resultSail = (animal.sail(distance) == Animal.SWIM_OK) ? "Проплыл!" : "Не проплыл!";
+                System.out.println(animal + " --> " + resultSail);
+            } else {
+                System.out.println(animal + " --> Не умеет плавать!");
             }
+        }
         System.out.println(String.format("%40s", "").replaceAll("", "-"));
     }
 
@@ -32,16 +38,16 @@ public class Main {
         Animal[] animals = {
                 new Dog("Собака1", 400, 8, 0.5),
                 new Dog("Собака2", 600, 10, 1),
-                new Cat("Кот1", 200, 2),
-                new Cat("Кот2", 150, 2.5),
+                new Cat("Кот1", 200, 1, 2),
+                new Cat("Кот2", 150, 1, 2.5),
                 new Horse("Лошадь1", 1500, 100, 3),
                 new Horse("Лошадь2", 900, 150, 3.5),
-                new Bird("Птица1", 5, 0.2),
-                new Bird("Птица2", 10, 0.5)
+                new Bird("Птица1", 5, 1, 0.2),
+                new Bird("Птица2", 10, 1, 0.5)
         };
 
-//        printActionRun(animals, 450);
-//        printActionJump(animals,0.5);
+        printActionRun(animals, 450);
+        printActionJump(animals,0.5);
         printActionSail(animals,10);
 
     }

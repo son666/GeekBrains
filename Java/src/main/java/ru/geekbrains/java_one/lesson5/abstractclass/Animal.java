@@ -12,20 +12,41 @@ package ru.geekbrains.java_one.lesson5.abstractclass;
 */
 
 public abstract class Animal {
-    private String name;
+    public static final int SWIM_FAIL = 0;
+    public static final int SWIM_OK = 1;
+    public static final int SWIM_WTF = -1;
 
-    public Animal(String name) {
+    private String type;
+    private String name;
+    private int distanceRun;
+    private int distanceSail;
+    private double heightJump;
+
+    public Animal(String type, String name, int distanceRun, int distanceSail, double heightJump) {
+        this.type = type;
         this.name = name;
+        this.distanceRun = distanceRun;
+        this.distanceSail = distanceSail;
+        this.heightJump = heightJump;
     }
 
-    public abstract boolean run(int distanceRun);
+    public boolean run(int distanceRun) {
+        return this.distanceRun >= distanceRun;
+    }
 
-    public abstract boolean sail(int distanceSail);
+    public int sail(int distanceSail) {
+        return (this.distanceSail >= distanceSail) ? SWIM_OK : SWIM_FAIL;
+    }
 
-    public abstract boolean jump(double heightJump);
+    public boolean jump(double heightJump) {
+        return this.heightJump >= heightJump;
+    }
 
     @Override
     public String toString() {
-        return "Имя: " + name;
+        return "Имя: " + name + ", " +
+                "Run max: " + distanceRun + ", " +
+                "Jump max: " + heightJump + ", " +
+                "Sil max: " + distanceSail;
     }
 }
