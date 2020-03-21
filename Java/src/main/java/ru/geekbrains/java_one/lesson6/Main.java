@@ -8,15 +8,21 @@ package ru.geekbrains.java_one.lesson6;
  */
 
 import java.io.*;
-import java.sql.SQLOutput;
 import java.util.Scanner;
 
 public class Main {
 
-    private static boolean createFile (String pathFile, String text) {
+    private static final String[][] FILE_PATH_ARRAY = {
+            {"C:\\firstFile.txt", "Создать 2 текстовых файла, примерно по 50-100 символов в каждом(особого значения не имеет);"},
+            {"C:\\secondFile.txt", "Написать программу, «склеивающую» эти файлы, то есть вначале идет текст из первого файла, потом текст из второго."}
+    };
+    private static String[] fileCreate = new String[FILE_PATH_ARRAY.length];
+    private static int createFiles = 0;
+
+    private static boolean createFile(String pathFile, String text) {
         try {
             PrintStream file = new PrintStream(new FileOutputStream(pathFile));
-            file.println(text);
+            file.print(text);
             file.close();
             return true;
         } catch (IOException e) {
@@ -29,12 +35,12 @@ public class Main {
         StringBuilder string = new StringBuilder("");
         try {
             PrintStream fileMerge = new PrintStream(new FileOutputStream(filePathResult, true));
-                Scanner reader = new Scanner(new FileInputStream(filePathRead));
-                while (reader.hasNext()) {
-                    string.append(reader.nextLine());
-                }
+            Scanner reader = new Scanner(new FileInputStream(filePathRead));
+            while (reader.hasNext()) {
+                string.append(reader.nextLine());
+            }
             reader.close();
-            fileMerge.println(string);
+            fileMerge.print(string);
             fileMerge.close();
             return true;
         } catch (IOException e) {
@@ -43,28 +49,72 @@ public class Main {
         }
     }
 
+    private static boolean searchWord(String pathFile, String wordSearch) {
+        StringBuilder string = new StringBuilder("");
+        try {
+            Scanner reader = new Scanner(new FileInputStream(pathFile));
+            while (reader.hasNext()) {
+                string.append(reader.nextLine());
+                if (string.substring(0).contains(" " + wordSearch + " ")) {
+                    reader.close();
+                    return true;
+                }
+                string.delete(0, string.length());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private static File searchWordInDir(String dirPath, String wordSearch) {
+        File dirFile = new File(dirPath);
+        if (dirFile.isDirectory()) {
+            for (File file : dirFile.listFiles()) {
+                if (!file.isDirectory()) {
+                    if (searchWord(file.getAbsolutePath(), wordSearch)) {
+                        return file;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     public static void main(String[] args) {
         //#1
-        String [][] filePathArray = {
-                {"C:\\firstFile.txt", "Создать 2 текстовых файла, примерно по 50-100 символов в каждом(особого значения не имеет);"},
-                {"C:\\secondFile.txt", "Написать программу, «склеивающую» эти файлы, то есть вначале идет текст из первого файла, потом текст из второго."}
-        };
-        String [] fileCreate = new String[filePathArray.length];
-        for (int i = 0; i < filePathArray.length; i++) {
-            for (int j = 1; j < filePathArray[i].length; j++) {
-                if (createFile(filePathArray[i][0], filePathArray[i][j])) {
-                    fileCreate[i] = filePathArray[i][0];
-                    System.out.println("Файл: " + filePathArray[i][0] + " создан!");
+        for (int i = 0; i < FILE_PATH_ARRAY.length; i++) {
+            for (int j = 1; j < FILE_PATH_ARRAY[i].length; j++) {
+                if (createFile(FILE_PATH_ARRAY[i][0], FILE_PATH_ARRAY[i][j])) {
+                    fileCreate[i] = FILE_PATH_ARRAY[i][0];
+                    System.out.println("File: " + FILE_PATH_ARRAY[i][0] + " create!");
+                    createFiles++;
                 }
             }
         }
 
         //#2
         String mergeFilePath = "C:\\mergeFile.txt";
-        System.out.println("Объединение файлов:");
-        for (String file : fileCreate) {
-            System.out.print("Merge files: " + mergeFilePath + " + " + file + " --> ");
-            System.out.println((mergeFile(mergeFilePath, file)) ? "Успешно" : "Ошибка");
+        if (createFiles > 0) {
+            System.out.println("Объединение файлов:");
+            for (String file : fileCreate) {
+                System.out.print("Merge files: " + mergeFilePath + " + " + file + " --> ");
+                System.out.println((mergeFile(mergeFilePath, file)) ? "Ok" : "Error");
+            }
+        } else {
+            System.out.println("Нет файлов для обьединения.");
         }
+
+        //#3
+        String filePath = "C:\\searchWord.txt";
+        String word = "depends";
+        System.out.print("Search word \"" + word + "\" in file " + filePath + " --> ");
+        System.out.println((searchWord(filePath, word)) ? "Word found" : "Word not found");
+
+        //#4
+        String dir = "C:\\";
+        System.out.println("Search word \"" + word + "\" in directory " + dir);
+        File fileFound = searchWordInDir(dir, word);
+        System.out.println((fileFound != null) ? "Word found in file --> " + fileFound.getName() : "Word not found");
     }
 }
