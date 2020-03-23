@@ -13,8 +13,8 @@ import java.util.Scanner;
 public class Main {
 
     private static final String[][] FILE_PATH_ARRAY = {
-            {"C:\\firstFile.txt", "Создать 2 текстовых файла, примерно по 50-100 символов в каждом(особого значения не имеет);"},
-            {"C:\\secondFile.txt", "Написать программу, «склеивающую» эти файлы, то есть вначале идет текст из первого файла, потом текст из второго."}
+            {"C:\\Dell\\firstFile.txt", "Создать 2 текстовых файла, примерно по 50-100 символов в каждом(особого значения не имеет);"},
+            {"C:\\Dell\\secondFile.txt", "Написать программу, «склеивающую» эти файлы, то есть вначале идет текст из первого файла, потом текст из второго."}
     };
     private static String[] fileCreate = new String[FILE_PATH_ARRAY.length];
     private static int createFiles = 0;
@@ -32,15 +32,13 @@ public class Main {
     }
 
     private static boolean mergeFile(String filePathResult, String filePathRead) {
-        StringBuilder string = new StringBuilder("");
         try {
             PrintStream fileMerge = new PrintStream(new FileOutputStream(filePathResult, true));
             Scanner reader = new Scanner(new FileInputStream(filePathRead));
             while (reader.hasNext()) {
-                string.append(reader.nextLine());
+                fileMerge.print(reader.nextLine());
             }
             reader.close();
-            fileMerge.print(string);
             fileMerge.close();
             return true;
         } catch (IOException e) {
@@ -94,7 +92,7 @@ public class Main {
         }
 
         //#2
-        String mergeFilePath = "C:\\mergeFile.txt";
+        String mergeFilePath = "C:\\Dell\\mergeFile.txt";
         if (createFiles > 0) {
             System.out.println("Объединение файлов:");
             for (String file : fileCreate) {
@@ -106,13 +104,13 @@ public class Main {
         }
 
         //#3
-        String filePath = "C:\\searchWord.txt";
+        String filePath = "C:\\Dell\\searchWord.txt";
         String word = "depends";
         System.out.print("Search word \"" + word + "\" in file " + filePath + " --> ");
         System.out.println((searchWord(filePath, word)) ? "Word found" : "Word not found");
 
         //#4
-        String dir = "C:\\";
+        String dir = "C:\\Dell";
         System.out.println("Search word \"" + word + "\" in directory " + dir);
         File fileFound = searchWordInDir(dir, word);
         System.out.println((fileFound != null) ? "Word found in file --> " + fileFound.getName() : "Word not found");
