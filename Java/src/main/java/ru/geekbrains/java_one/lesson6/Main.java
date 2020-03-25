@@ -12,6 +12,7 @@ import java.util.Scanner;
 
 public class Main {
 
+    //TODO сделать метод генерирующий последовательности букв
     private static final String[][] FILE_PATH_ARRAY = {
             {"C:\\Dell\\firstFile.txt", "Создать 2 текстовых файла, примерно по 50-100 символов в каждом(особого значения не имеет);"},
             {"C:\\Dell\\secondFile.txt", "Написать программу, «склеивающую» эти файлы, то есть вначале идет текст из первого файла, потом текст из второго."}
@@ -31,6 +32,7 @@ public class Main {
         }
     }
 
+    //TODO Убрать Scanner и работать с байтами
     private static boolean mergeFile(String filePathResult, String filePathRead) {
         try {
             PrintStream fileMerge = new PrintStream(new FileOutputStream(filePathResult, true));
@@ -47,6 +49,7 @@ public class Main {
         }
     }
 
+    //TODO Убрать Scanner и работать с байтами
     private static boolean searchWord(String pathFile, String wordSearch) {
         StringBuilder string = new StringBuilder("");
         try {
