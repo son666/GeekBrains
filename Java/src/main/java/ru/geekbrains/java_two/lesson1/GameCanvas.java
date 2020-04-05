@@ -8,12 +8,10 @@ import java.awt.event.MouseEvent;
 public class GameCanvas extends JPanel {
 
     MainCircles listener;
-    BackGroundCanvas backGroundCanvas;
     long lastFrameTime;
 
-    GameCanvas(MainCircles listener, BackGroundCanvas backGroundCanvas) {
+    GameCanvas(MainCircles listener) {
         this.listener = listener;
-        this.backGroundCanvas = backGroundCanvas;
         lastFrameTime = System.nanoTime();
         addMouseListener(new MouseAdapter() {
             @Override
@@ -36,7 +34,6 @@ public class GameCanvas extends JPanel {
         float deltaTime = (currentTime - lastFrameTime) * 0.000000001f;
         lastFrameTime = currentTime;
         listener.onCanvasRepainted(this, g, deltaTime);
-        backGroundCanvas.onCanvasRepainted(this, deltaTime);
         try {
             Thread.sleep(17);
         } catch (InterruptedException e) {

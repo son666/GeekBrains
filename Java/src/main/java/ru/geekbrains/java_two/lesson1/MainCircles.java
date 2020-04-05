@@ -2,17 +2,21 @@ package ru.geekbrains.java_two.lesson1;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 
 public class MainCircles extends JFrame {
+    BackGroundCanvas backGroundCanvas;
+
     private static final int POS_X = 400;
     private static final int POS_Y = 200;
     private static final int WINDOW_WIDTH = 800;
     private static final int WINDOW_HEIGHT = 600;
-    private static final int START_ELEMENT = 10;
-    private static final int ALL_ELEMENT = 100;
+
+    private static final int START_ELEMENT = 5;
+    private static final int INIT_SIZE_ELEMENT = 5;
     private int size;
 
-    Sprite[] sprites = new Sprite[ALL_ELEMENT];
+    Sprite[] sprites = new Sprite[INIT_SIZE_ELEMENT];
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -26,7 +30,8 @@ public class MainCircles extends JFrame {
     private MainCircles() {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setBounds(POS_X, POS_Y, WINDOW_WIDTH, WINDOW_HEIGHT);
-        GameCanvas canvas = new GameCanvas(this, new BackGroundCanvas());
+        GameCanvas canvas = new GameCanvas(this);
+        this.backGroundCanvas = new BackGroundCanvas();
         add(canvas, BorderLayout.CENTER);
         setTitle("Circles");
         initApplication();
@@ -43,6 +48,7 @@ public class MainCircles extends JFrame {
     void onCanvasRepainted(GameCanvas canvas, Graphics g, float deltaTime) {
         update(canvas, deltaTime);
         render(canvas, g);
+        backGroundCanvas.onCanvasRepainted(canvas, deltaTime);
     }
 
     private void update(GameCanvas canvas, float deltaTime) {
@@ -58,7 +64,8 @@ public class MainCircles extends JFrame {
     }
 
     public void addElement(Sprite sprite) {
-        if (size < sprites.length) {
+        if (size <= sprites.length) {
+            sprites = Arrays.copyOf(sprites, sprites.length + INIT_SIZE_ELEMENT);
             sprites[size] = sprite;
             size++;
         }

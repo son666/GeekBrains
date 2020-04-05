@@ -9,10 +9,11 @@ public class BackGroundCanvas {
     private float timeSecChangeBG = 5.0f;
 
     void onCanvasRepainted(GameCanvas canvas, float deltaTime) {
-        render(canvas, deltaTime);
+        update(deltaTime);
+        render(canvas);
     }
 
-    void render(GameCanvas canvas, float deltaTime) {
+    void update(float deltaTime) {
         timeSec += deltaTime;
         if (timeSec > timeSecChangeBG) {
             color = new Color(
@@ -20,9 +21,12 @@ public class BackGroundCanvas {
                     (int) (Math.random() * 255),
                     (int) (Math.random() * 255)
             );
-            canvas.setBackground(color);
             timeSec = 0.0f;
         }
+    }
+
+    void render(GameCanvas canvas) {
+            canvas.setBackground(color);
     }
 
 }
