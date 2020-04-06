@@ -1,29 +1,18 @@
-package ru.geekbrains.java_two.lesson1;
+package ru.geekbrains.java_two.lesson1.common;
+
+import ru.geekbrains.java_two.lesson1.circles.MainCircles;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class GameCanvas extends JPanel {
 
-    MainCircles listener;
+    GameCanvasListener listener;
     long lastFrameTime;
 
-    GameCanvas(MainCircles listener) {
+    public GameCanvas(GameCanvasListener listener) {
         this.listener = listener;
         lastFrameTime = System.nanoTime();
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                if (e.getButton() == MouseEvent.BUTTON1) {
-                    listener.addElement(new Ball());
-                } else if (e.getButton() == MouseEvent.BUTTON3) {
-                    listener.deleteElement();
-                }
-            }
-        });
     }
 
     @Override

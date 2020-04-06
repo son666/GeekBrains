@@ -1,4 +1,7 @@
-package ru.geekbrains.java_two.lesson1;
+package ru.geekbrains.java_two.lesson1.circles;
+
+import ru.geekbrains.java_two.lesson1.common.GameCanvas;
+import ru.geekbrains.java_two.lesson1.common.Sprite;
 
 import java.awt.*;
 
@@ -17,8 +20,14 @@ public class Ball extends Sprite {
         halfWidth = halfHeight;
     }
 
+    Ball(float x, float y) {
+        this();
+        this.x = x;
+        this.y = y;
+    }
+
     @Override
-    void update(GameCanvas canvas, float deltaTime) {
+    public void update(GameCanvas canvas, float deltaTime) {
         x += vX * deltaTime;
         y += vY * deltaTime;
         if (getLeft() < canvas.getLeft()) {
@@ -41,7 +50,7 @@ public class Ball extends Sprite {
     }
 
     @Override
-    void render(GameCanvas canvas, Graphics g) {
+    public void render(GameCanvas canvas, Graphics g) {
         g.setColor(color);
         g.fillOval((int) getLeft(), (int) getTop(),
                 (int) getWidth(), (int) getHeight());

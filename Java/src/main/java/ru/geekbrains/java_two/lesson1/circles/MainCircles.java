@@ -1,22 +1,26 @@
-package ru.geekbrains.java_two.lesson1;
+package ru.geekbrains.java_two.lesson1.circles;
+
+import ru.geekbrains.java_two.lesson1.common.GameCanvas;
+import ru.geekbrains.java_two.lesson1.common.GameCanvasListener;
+import ru.geekbrains.java_two.lesson1.common.GameObject;
+import ru.geekbrains.java_two.lesson1.common.Sprite;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Arrays;
 
-public class MainCircles extends JFrame {
+public class MainCircles extends JFrame implements GameCanvasListener {
     BackGroundCanvas backGroundCanvas;
 
     private static final int POS_X = 400;
     private static final int POS_Y = 200;
     private static final int WINDOW_WIDTH = 800;
     private static final int WINDOW_HEIGHT = 600;
-
-    private static final int START_ELEMENT = 5;
-    private static final int INIT_SIZE_ELEMENT = 5;
     private int size;
 
-    Sprite[] sprites = new Sprite[INIT_SIZE_ELEMENT];
+    GameObject[] gameObjects = new GameObject[1];
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -31,7 +35,17 @@ public class MainCircles extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setBounds(POS_X, POS_Y, WINDOW_WIDTH, WINDOW_HEIGHT);
         GameCanvas canvas = new GameCanvas(this);
-        this.backGroundCanvas = new BackGroundCanvas();
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    addElement(new Ball(e.getX(), e.getY()));
+                } else if (e.getButton() == MouseEvent.BUTTON3) {
+                    deleteElement();
+                }
+            }
+        });
         add(canvas, BorderLayout.CENTER);
         setTitle("Circles");
         initApplication();
@@ -39,42 +53,36 @@ public class MainCircles extends JFrame {
     }
 
     private void initApplication() {
-        for (int i = 0; i < START_ELEMENT; i++) {
-            sprites[i] = new Ball();
+        gameObjects[0] = new BackGroundCanvas();
             size++;
-        }
     }
 
-    void onCanvasRepainted(GameCanvas canvas, Graphics g, float deltaTime) {
+    public void onCanvasRepainted(GameCanvas canvas, Graphics g, float deltaTime) {
         update(canvas, deltaTime);
         render(canvas, g);
-        backGroundCanvas.onCanvasRepainted(canvas, deltaTime);
     }
 
     private void update(GameCanvas canvas, float deltaTime) {
         for (int i = 0; i < size; i++) {
-            sprites[i].update(canvas, deltaTime);
+            gameObjects[i].update(canvas, deltaTime);
         }
     }
 
     private void render(GameCanvas canvas, Graphics g) {
         for (int i = 0; i < size; i++) {
-            sprites[i].render(canvas, g);
+            gameObjects[i].render(canvas, g);
         }
     }
 
     public void addElement(Sprite sprite) {
-        if (size <= sprites.length) {
-            sprites = Arrays.copyOf(sprites, sprites.length + INIT_SIZE_ELEMENT);
-            sprites[size] = sprite;
+        if (size <= gameObjects.length) {
+            gameObjects = Arrays.copyOf(gameObjects, gameObjects.length * 2);
+            gameObjects[size] = sprite;
             size++;
         }
     }
 
     public void deleteElement() {
-        if (size > 0) {
-            sprites[size - 1] = null;
-            size--;
-        }
+        if (size > 1) size--;
     }
 }
