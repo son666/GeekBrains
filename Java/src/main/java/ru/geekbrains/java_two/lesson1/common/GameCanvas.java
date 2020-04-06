@@ -1,14 +1,16 @@
-package ru.geekbrains.java_two.lesson1;
+package ru.geekbrains.java_two.lesson1.common;
+
+import ru.geekbrains.java_two.lesson1.circles.MainCircles;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class GameCanvas extends JPanel {
 
-    MainCircles listener;
+    GameCanvasListener listener;
     long lastFrameTime;
 
-    GameCanvas(MainCircles listener) {
+    public GameCanvas(GameCanvasListener listener) {
         this.listener = listener;
         lastFrameTime = System.nanoTime();
     }
@@ -29,9 +31,20 @@ public class GameCanvas extends JPanel {
         repaint();
     }
 
-    public int getLeft() { return 0; }
-    public int getRight() { return getWidth() - 1; }
-    public int getTop() { return 0; }
-    public int getBottom() { return getHeight() - 1; }
+    public int getLeft() {
+        return 0;
+    }
+
+    public int getRight() {
+        return getWidth() - 1;
+    }
+
+    public int getTop() {
+        return 0;
+    }
+
+    public int getBottom() {
+        return getHeight() - 1;
+    }
 
 }

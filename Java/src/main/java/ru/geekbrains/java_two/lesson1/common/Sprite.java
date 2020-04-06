@@ -1,12 +1,13 @@
-package ru.geekbrains.java_two.lesson1;
+package ru.geekbrains.java_two.lesson1.common;
 
 import java.awt.*;
 
-public abstract class Sprite {
+public abstract class Sprite implements GameObject {
     protected float x;
     protected float y;
     protected float halfWidth;
     protected float halfHeight;
+
 
     protected float getLeft() {
         return x - halfWidth;
@@ -39,7 +40,7 @@ public abstract class Sprite {
         return 2f * halfHeight;
     }
 
-    void update(GameCanvas canvas, float deltaTime) {}
-    void render(GameCanvas canvas, Graphics g) {}
+    public void update(GameCanvas canvas, float deltaTime) {}
+    public void render(GameCanvas canvas, Graphics g) {}
 
 }
