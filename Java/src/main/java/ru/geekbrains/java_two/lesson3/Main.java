@@ -8,16 +8,19 @@ public class Main {
             "которое после некоторой доводки можно использовать в самых разных ситуациях.";
     private static String[] arrWord;
 
+    private static Set<String> searchWordInText(String text) {
+        arrWord = str.replaceAll("[,.]", "").split("\\s");
+        return new LinkedHashSet<>(Arrays.asList(arrWord));
+    }
+
     private static Map<String, Integer> countWordInText(Set<String> setWord) {
         Map<String, Integer> mapCountWord = new LinkedHashMap<>();
-        LinkedList<String> listArrWord = new LinkedList<>(Arrays.asList(arrWord));
         int countWord;
         for (String word : setWord) {
             countWord = 0;
-            for (int i = 0; i < listArrWord.size(); i++) {
-                if (word.equals(listArrWord.get(i))) {
+            for (int i = 0; i < arrWord.length; i++) {
+                if (word.equals(arrWord[i])) {
                     countWord++;
-                    listArrWord.remove(i);
                 }
             }
             mapCountWord.put(word, countWord);
@@ -27,8 +30,7 @@ public class Main {
 
     public static void main(String[] args) {
         //#1 Использовал LinkedHashSet и LinkedHashMap для сохранения порядка слов не дублей в итоговом map
-        arrWord = str.replaceAll("[,.]", "").split("\\s");
-        Set<String> setWords = new LinkedHashSet<>(Arrays.asList(arrWord));
+        Set<String> setWords = searchWordInText(str);
         Map<String, Integer> countWord = countWordInText(setWords);
         for (String key : countWord.keySet()) {
             System.out.println(key + " = " + countWord.get(key));

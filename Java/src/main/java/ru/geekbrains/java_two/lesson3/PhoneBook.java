@@ -4,18 +4,6 @@ import java.util.*;
 
 public class PhoneBook {
     private Map<String, List<Person>> mapPhoneBook = new HashMap<>();
-    private List<Person> listSearchPerson = new ArrayList<>();
-    private List<String> listSearchContact = new ArrayList<>();
-
-    private boolean isSearchPerson(String lastName) {
-        listSearchPerson = mapPhoneBook.get(lastName);
-        if (listSearchPerson == null) {
-            return false;
-        } else {
-            listSearchContact.clear();
-            return true;
-        }
-    }
 
     public PhoneBook(List<Person> listPerson) {
         for (Person person : listPerson) {
@@ -28,28 +16,32 @@ public class PhoneBook {
     }
 
     public List<String> searchPhoneNumber(String lastName) {
-        if (!isSearchPerson(lastName)) {
+        List<Person> listSearchPerson = mapPhoneBook.get(lastName);
+        List<String> listSearchPhone = new ArrayList<>();
+        if (listSearchPerson == null) {
             return null;
         } else {
             for (Person person : listSearchPerson) {
                 for (String phone : person.getListPhone()) {
-                    listSearchContact.add(phone);
+                    listSearchPhone.add(phone);
                 }
             }
-            return listSearchContact;
+            return listSearchPhone;
         }
     }
 
     public List<String> searchEmail(String lastName) {
-        if (!isSearchPerson(lastName)) {
+        List<Person> listSearchPerson = mapPhoneBook.get(lastName);
+        List<String> listSearchEmail = new ArrayList<>();
+        if (listSearchPerson == null) {
             return null;
         } else {
             for (Person person : listSearchPerson) {
                 for (String phone : person.getListEmail()) {
-                    listSearchContact.add(phone);
+                    listSearchEmail.add(phone);
                 }
             }
-            return listSearchContact;
+            return listSearchEmail;
         }
     }
 }
