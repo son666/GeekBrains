@@ -15,6 +15,15 @@ public class PhoneBook {
         }
     }
 
+    public void add(Person person) {
+        if (mapPhoneBook.containsKey(person.getFio())) {
+            mapPhoneBook.get(person.getFio()).add(person);
+        } else {
+            List<Person> listPerson = new ArrayList<>(Arrays.asList(person));
+            mapPhoneBook.put(person.getFio(), listPerson);
+        }
+    }
+
     public List<String> searchPhoneNumber(String lastName) {
         List<Person> listSearchPerson = mapPhoneBook.get(lastName);
         List<String> listSearchPhone = new ArrayList<>();
