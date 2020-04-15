@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class ClientGUI extends JFrame implements ActionListener, Thread.UncaughtExceptionHandler {
     private static final int WIDTH = 400;
@@ -50,6 +52,8 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         log.setWrapStyleWord(true);
         log.setEditable(false);
         cbAlwaysOnTop.addActionListener(this);
+        btnSend.addActionListener(this);
+        tfMessage.addActionListener(this);
 
         panelTop.add(tfIPAddress);
         panelTop.add(tfPort);
@@ -73,6 +77,14 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         Object obj = e.getSource();
         if (obj == cbAlwaysOnTop) {
             setAlwaysOnTop(cbAlwaysOnTop.isSelected());
+        } else if (obj == btnSend || obj == tfMessage) {
+            if (tfMessage.getText().isEmpty()) {
+                return;
+            }
+            String message = tfMessage.getText() + "\n";
+            tfMessage.setText("");
+            log.append(message);
+            saveToFile(message);
         } else {
             throw new RuntimeException("Unknown source:" + obj);
         }
@@ -84,5 +96,16 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         String msg = String.format("Exception in thread \"%s\" %s: %s\n\tat %s", t.getName(), e.getClass().getCanonicalName(), e.getMessage(), e.getStackTrace()[0]);
         JOptionPane.showMessageDialog(this, msg, "Exception", JOptionPane.ERROR_MESSAGE);
         System.exit(1);
+    }
+
+    private void saveToFile(String text) {
+        try (FileOutputStream inputStream = new FileOutputStream("E:\\logChat.txt", true)) {
+            inputStream.write(text.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+            String msg = String.format("Exception in %s: %s\n\tat %s", e.getClass().getCanonicalName(), e.getMessage(), e.getStackTrace()[4]);
+            JOptionPane.showMessageDialog(this, msg, "Exception", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
     }
 }
