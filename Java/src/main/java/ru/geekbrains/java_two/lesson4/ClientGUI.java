@@ -81,10 +81,9 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
             if (tfMessage.getText().isEmpty()) {
                 return;
             }
-            String message = tfMessage.getText() + "\n";
+            sendToLogger(tfMessage.getText() + "\n");
             tfMessage.setText("");
-            log.append(message);
-            saveToFile(message);
+
         } else {
             throw new RuntimeException("Unknown source:" + obj);
         }
@@ -98,14 +97,16 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         System.exit(1);
     }
 
+    private void sendToLogger(String message) {
+        log.append(message);
+        saveToFile(message);
+    }
+
     private void saveToFile(String text) {
         try (FileOutputStream inputStream = new FileOutputStream("E:\\logChat.txt", true)) {
             inputStream.write(text.getBytes());
         } catch (IOException e) {
-            e.printStackTrace();
-            String msg = String.format("Exception in %s: %s\n\tat %s", e.getClass().getCanonicalName(), e.getMessage(), e.getStackTrace()[4]);
-            JOptionPane.showMessageDialog(this, msg, "Exception", JOptionPane.ERROR_MESSAGE);
-            return;
+            uncaughtException(Thread.currentThread(), e);
         }
     }
 }
