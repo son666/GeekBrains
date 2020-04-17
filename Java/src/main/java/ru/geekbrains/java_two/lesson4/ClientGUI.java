@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class ClientGUI extends JFrame implements ActionListener, Thread.UncaughtExceptionHandler {
@@ -78,12 +78,7 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         if (obj == cbAlwaysOnTop) {
             setAlwaysOnTop(cbAlwaysOnTop.isSelected());
         } else if (obj == btnSend || obj == tfMessage) {
-            if (tfMessage.getText().isEmpty()) {
-                return;
-            }
-            sendToLogger(tfMessage.getText() + "\n");
-            tfMessage.setText("");
-
+            sendToLogMessage();
         } else {
             throw new RuntimeException("Unknown source:" + obj);
         }
@@ -92,19 +87,43 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
     @Override
     public void uncaughtException(Thread t, Throwable e) {
         e.printStackTrace();
-        String msg = String.format("Exception in thread \"%s\" %s: %s\n\tat %s", t.getName(), e.getClass().getCanonicalName(), e.getMessage(), e.getStackTrace()[0]);
+        String msg;
+        StackTraceElement[] ste = e.getStackTrace();
+        if (ste.length == 0) {
+            msg = "Empty Stacktrace";
+        } else {
+            msg = String.format("Exception in thread \"%s\" %s: %s\n\tat %s",
+                    t.getName(), e.getClass().getCanonicalName(), e.getMessage(), ste[0]);
+        }
         JOptionPane.showMessageDialog(this, msg, "Exception", JOptionPane.ERROR_MESSAGE);
         System.exit(1);
     }
 
-    private void sendToLogger(String message) {
-        log.append(message);
-        saveToFile(message);
+    private void sendToLogMessage() {
+        String msg = tfMessage.getText();
+        String user = tfLogin.getText();
+        if ("".equals(msg)) return;
+        tfMessage.setText(null);
+        tfMessage.requestFocusInWindow();
+        putLog(String.format("%s: %s", user, msg));
+        saveToFile(msg, user);
     }
 
-    private void saveToFile(String text) {
-        try (FileOutputStream inputStream = new FileOutputStream("E:\\logChat.txt", true)) {
-            inputStream.write(text.getBytes());
+    private void putLog(String message) {
+        if ("".equals(message)) return;
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                log.append(message + System.lineSeparator());
+                log.setCaretPosition(log.getDocument().getLength());
+            }
+        });
+    }
+
+    private void saveToFile(String msg, String user) {
+        try (FileWriter fileWriter = new FileWriter("E:\\logChat.txt", true)) {
+            fileWriter.write(user + " : " + msg + System.lineSeparator());
+            fileWriter.flush();
         } catch (IOException e) {
             uncaughtException(Thread.currentThread(), e);
         }
