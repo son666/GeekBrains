@@ -7,10 +7,12 @@ import ru.gb.javatwo.network.SocketThreadListener;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Vector;
 
 public class ChatServer implements ServerSocketThreadListener, SocketThreadListener {
 
     ServerSocketThread server;
+    private Vector<SocketThread> vectorSocketClient = new Vector();
 
     public void start(int port) {
         if (server != null && server.isAlive())
@@ -25,6 +27,16 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
         } else {
             server.interrupt();
         }
+    }
+
+    public boolean sendMessageAllClient(String msg) {
+        if (vectorSocketClient.size() != 0) {
+            for (SocketThread socketClient : vectorSocketClient) {
+                socketClient.sendMessage(msg);
+            }
+            return true;
+        }
+        return false;
     }
 
     private void putLog(String msg) {
@@ -54,7 +66,7 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
     public void onSocketAccepted(ServerSocketThread thread, ServerSocket server, Socket socket) {
         putLog("Client connected");
         String name = "SocketThread " + socket.getInetAddress() + ":" + socket.getPort();
-        new SocketThread(this, name, socket);
+        vectorSocketClient.add(new SocketThread(this, name, socket));
     }
 
     @Override
@@ -81,6 +93,7 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
     @Override
     public void onSocketStop(SocketThread thread) {
         putLog("Socket stopped");
+        vectorSocketClient.remove(thread);
     }
 
     @Override
