@@ -1,4 +1,4 @@
-package ru.geekbrains.java_two.lesson4;
+package ru.geekbrains.java_two.lesson4.chat;
 
 import javax.swing.*;
 import java.awt.*;

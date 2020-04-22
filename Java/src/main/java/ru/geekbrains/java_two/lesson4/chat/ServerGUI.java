@@ -1,4 +1,4 @@
-package ru.geekbrains.java_two.lesson4;
+package ru.geekbrains.java_two.lesson4.chat;
 
 import javax.swing.*;
 import java.awt.*;
@@ -45,7 +45,7 @@ public class ServerGUI extends JFrame implements ActionListener, Thread.Uncaught
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
         if(source == btnStart) {
-            server.start(8080);
+            server.start(8189);
         } else if (source == btnStop) {
             server.stop();
         } else {
