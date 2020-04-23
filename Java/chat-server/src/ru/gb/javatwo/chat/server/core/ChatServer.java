@@ -101,11 +101,7 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
 
     @Override
     public void onReceiveString(SocketThread thread, Socket socket, String msg) {
-        if (msg.contains("Message all:")) {
-            sendMessageAllClient(msg);
-        } else {
-            thread.sendMessage("echo: " + msg);
-        }
+        sendMessageAllClient(msg);
     }
 
     @Override

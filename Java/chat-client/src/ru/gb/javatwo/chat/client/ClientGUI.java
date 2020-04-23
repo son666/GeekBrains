@@ -20,16 +20,14 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
     private final JTextField tfIPAddress = new JTextField("127.0.0.1");
     private final JTextField tfPort = new JTextField("8189");
     private final JCheckBox cbAlwaysOnTop = new JCheckBox("Always on top", true);
-    private final JCheckBox cbSendMessageAll = new JCheckBox("Send all", false);
     private final JTextField tfLogin = new JTextField("ivan");
     private final JPasswordField tfPassword = new JPasswordField("123");
     private final JButton btnLogin = new JButton("Login");
 
-    private final JPanel panelBottom = new JPanel(new GridLayout(1, 4));
+    private final JPanel panelBottom = new JPanel(new BorderLayout());
     private final JButton btnDisconnect = new JButton("<html><b>Disconnect</b></html>");
     private final JTextField tfMessage = new JTextField();
     private final JButton btnSend = new JButton("Send");
-    private final JButton btnSendAll = new JButton("SendAll");
 
     private final JList<String> userList = new JList<>();
     private SocketThread socketThread;
@@ -70,10 +68,9 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         panelTop.add(tfLogin);
         panelTop.add(tfPassword);
         panelTop.add(btnLogin);
-        panelBottom.add(btnDisconnect);
-        panelBottom.add(tfMessage);
-        panelBottom.add(cbSendMessageAll);
-        panelBottom.add(btnSend);
+        panelBottom.add(btnDisconnect, BorderLayout.WEST);
+        panelBottom.add(tfMessage, BorderLayout.CENTER);
+        panelBottom.add(btnSend, BorderLayout.EAST);
         add(scrUser, BorderLayout.EAST);
         add(scrLog, BorderLayout.CENTER);
         add(panelTop, BorderLayout.NORTH);
@@ -89,7 +86,6 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
             setAlwaysOnTop(cbAlwaysOnTop.isSelected());
         } else if (obj == btnSend || obj == tfMessage) {
             sendToLogMessage();
-
         } else if (obj == btnLogin) {
             connect();
         } else if (obj == btnDisconnect) {
@@ -132,9 +128,6 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         String msg = tfMessage.getText();
         String user = tfLogin.getText();
         if ("".equals(msg)) return;
-        if (cbSendMessageAll.isSelected()) {
-            msg = "Message all: " + msg;
-        }
         tfMessage.setText(null);
         tfMessage.requestFocusInWindow();
         socketThread.sendMessage(String.format("%s: %s", user, msg));
