@@ -29,14 +29,12 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
         }
     }
 
-    public boolean sendMessageAllClient(String msg) {
+    public void sendMessageAllClient(String msg) {
         if (vectorSocketClient.size() != 0) {
             for (SocketThread socketClient : vectorSocketClient) {
                 socketClient.sendMessage(msg);
             }
-            return true;
         }
-        return false;
     }
 
     private void putLog(String msg) {
