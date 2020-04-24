@@ -4,11 +4,13 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Objects;
 
 public class SocketThread extends Thread {
 
     private Socket socket;
     private SocketThreadListener listener;
+    private DataInputStream in;
     private DataOutputStream out;
 
     public SocketThread(SocketThreadListener listener, String name, Socket socket) {
@@ -22,7 +24,7 @@ public class SocketThread extends Thread {
     public void run() {
         try {
             listener.onSocketStart(this, socket);
-            DataInputStream in = new DataInputStream(socket.getInputStream());
+            in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
             listener.onSocketReady(this, socket);
             while (!isInterrupted()) {
@@ -51,6 +53,7 @@ public class SocketThread extends Thread {
 
     public synchronized void close() {
         try {
+            in.close();
             out.close();
         } catch (IOException e) {
             listener.onSocketException(this, e);
@@ -63,4 +66,17 @@ public class SocketThread extends Thread {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SocketThread that = (SocketThread) o;
+        return Objects.equals(socket, that.socket) &&
+                Objects.equals(listener, that.listener);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(socket, listener);
+    }
 }

@@ -1,5 +1,6 @@
 package ru.gb.javatwo.chat.client;
 
+import ru.gb.javatwo.chat.common.Library;
 import ru.gb.javatwo.network.SocketThread;
 import ru.gb.javatwo.network.SocketThreadListener;
 
@@ -20,7 +21,7 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
     private final JTextField tfIPAddress = new JTextField("127.0.0.1");
     private final JTextField tfPort = new JTextField("8189");
     private final JCheckBox cbAlwaysOnTop = new JCheckBox("Always on top", true);
-    private final JTextField tfLogin = new JTextField("ivan");
+    private final JTextField tfLogin = new JTextField("Alex");
     private final JPasswordField tfPassword = new JPasswordField("123");
     private final JButton btnLogin = new JButton("Login");
 
@@ -60,6 +61,7 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         btnSend.addActionListener(this);
         tfMessage.addActionListener(this);
         btnLogin.addActionListener(this);
+        btnDisconnect.addActionListener(this);
 
         panelTop.add(tfIPAddress);
         panelTop.add(tfPort);
@@ -70,11 +72,11 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         panelBottom.add(btnDisconnect, BorderLayout.WEST);
         panelBottom.add(tfMessage, BorderLayout.CENTER);
         panelBottom.add(btnSend, BorderLayout.EAST);
-
         add(scrUser, BorderLayout.EAST);
         add(scrLog, BorderLayout.CENTER);
         add(panelTop, BorderLayout.NORTH);
         add(panelBottom, BorderLayout.SOUTH);
+        panelBottom.setVisible(false);
         setVisible(true);
     }
 
@@ -87,6 +89,8 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
             sendToLogMessage();
         } else if (obj == btnLogin) {
             connect();
+        } else if (obj == btnDisconnect) {
+            disConnect();
         } else {
             throw new RuntimeException("Unknown source:" + obj);
         }
@@ -95,10 +99,15 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
     private void connect() {
         try {
             Socket socket = new Socket(tfIPAddress.getText(), Integer.parseInt(tfPort.getText()));
-            socketThread = new SocketThread(this, "Client", socket);
+            socketThread = new SocketThread(this, tfLogin.getText(), socket);
         } catch (IOException e) {
             uncaughtException(Thread.currentThread(), e);
         }
+    }
+
+    private void disConnect() {
+        socketThread.interrupt();
+        socketThread.sendMessage(tfLogin.getText() + " exit from chat!");
     }
 
     @Override
@@ -146,9 +155,19 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         }
     }
 
+    private void reversVisiblePanel() {
+        if (panelTop.isVisible()) {
+            panelTop.setVisible(false);
+            panelBottom.setVisible(true);
+        } else {
+            panelTop.setVisible(true);
+            panelBottom.setVisible(false);
+        }
+    }
+
     /**
      * Socket Thread Listener methods
-     * */
+     */
 
     @Override
     public void onSocketStart(SocketThread thread, Socket socket) {
@@ -157,12 +176,17 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
 
     @Override
     public void onSocketStop(SocketThread thread) {
+        reversVisiblePanel();
         putLog("Stop");
     }
 
     @Override
     public void onSocketReady(SocketThread thread, Socket socket) {
+        reversVisiblePanel();
         putLog("Ready");
+        String login = tfLogin.getText();
+        String password = new String(tfPassword.getPassword());
+        thread.sendMessage(Library.getAuthRequest(login, password));
     }
 
     @Override
@@ -173,5 +197,8 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
     @Override
     public void onSocketException(SocketThread thread, Throwable throwable) {
         uncaughtException(thread, throwable);
+        saveToFile(String.format("Exception in thread \"%s\" %s: %s\n\tat %s",
+                thread.getName(), throwable.getClass().getCanonicalName(), throwable.getMessage(), throwable.getStackTrace()[0]),
+                tfLogin.getText());
     }
 }
