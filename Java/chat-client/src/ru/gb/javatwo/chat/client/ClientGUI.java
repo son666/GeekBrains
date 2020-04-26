@@ -101,7 +101,7 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
             Socket socket = new Socket(tfIPAddress.getText(), Integer.parseInt(tfPort.getText()));
             socketThread = new SocketThread(this, tfLogin.getText(), socket);
         } catch (IOException e) {
-            uncaughtException(Thread.currentThread(), e);
+            showException(Thread.currentThread(), e);
         }
     }
 
@@ -110,18 +110,22 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         socketThread.sendMessage(tfLogin.getText() + " exit from chat!");
     }
 
+    private void showException(Thread t, Throwable e) {
+        String msg;
+        StackTraceElement[] ste = e.getStackTrace();
+        if (ste.length == 0)
+            msg = "Empty Stacktrace";
+        else {
+            msg = String.format("Exception in \"%s\" %s: %s\n\tat %s",
+                    t.getName(), e.getClass().getCanonicalName(), e.getMessage(), ste[0]);
+            JOptionPane.showMessageDialog(this, msg, "Exception", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     @Override
     public void uncaughtException(Thread t, Throwable e) {
         e.printStackTrace();
-        String msg;
-        StackTraceElement[] ste = e.getStackTrace();
-        if (ste.length == 0) {
-            msg = "Empty Stacktrace";
-        } else {
-            msg = String.format("Exception in thread \"%s\" %s: %s\n\tat %s",
-                    t.getName(), e.getClass().getCanonicalName(), e.getMessage(), ste[0]);
-        }
-        JOptionPane.showMessageDialog(this, msg, "Exception", JOptionPane.ERROR_MESSAGE);
+        showException(t, e);
         System.exit(1);
     }
 
@@ -196,9 +200,6 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
 
     @Override
     public void onSocketException(SocketThread thread, Throwable throwable) {
-        uncaughtException(thread, throwable);
-        saveToFile(String.format("Exception in thread \"%s\" %s: %s\n\tat %s",
-                thread.getName(), throwable.getClass().getCanonicalName(), throwable.getMessage(), throwable.getStackTrace()[0]),
-                tfLogin.getText());
+        showException(thread, throwable);
     }
 }
