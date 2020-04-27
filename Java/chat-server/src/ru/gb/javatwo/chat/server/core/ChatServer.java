@@ -75,6 +75,7 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
     @Override
     public void onServerStop(ServerSocketThread thread) {
         putLog("Server thread stopped");
+        dropAllClients();
         SqlClient.disconnect();
     }
 
@@ -84,24 +85,30 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
      * */
 
     @Override
-    public void onSocketStart(SocketThread thread, Socket socket) {
+    public synchronized void onSocketStart(SocketThread thread, Socket socket) {
         putLog("Socket started");
     }
 
     @Override
-    public void onSocketStop(SocketThread thread) {
+    public synchronized void onSocketStop(SocketThread thread) {
         putLog("Socket stopped");
+        ClientThread client = (ClientThread) thread;
         vectorSocketClient.remove(thread);
+        if (client.isAuthorized() && !client.isReconnecting()) {
+            sendMessageAllClient(Library.getTypeBroadcast("Server",
+                    client.getNickname() + " disconnected"));
+        }
+        sendMessageAllClient(Library.getUserList(getUsers()));
     }
 
     @Override
-    public void onSocketReady(SocketThread thread, Socket socket) {
+    public synchronized void onSocketReady(SocketThread thread, Socket socket) {
         putLog("Socket ready");
         vectorSocketClient.add(thread);
     }
 
     @Override
-    public void onReceiveString(SocketThread thread, Socket socket, String msg) {
+    public synchronized void onReceiveString(SocketThread thread, Socket socket, String msg) {
         ClientThread client = (ClientThread) thread;
         if (client.isAuthorized()) {
             handleAuthMessage(client, msg);
@@ -110,7 +117,16 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
     }
 
     void handleAuthMessage(ClientThread client, String msg) {
-        sendMessageAllClient(msg);
+        String[] arr = msg.split(Library.DELIMITER);
+        String msgType = arr[0];
+        switch (msgType) {
+            case Library.TYPE_BCAST_CLIENT:
+                sendMessageAllClient(Library.getTypeBroadcast(
+                        client.getNickname(), arr[1]));
+                break;
+            default:
+                client.sendMessage(Library.getMsgFormatError(msg));
+        }
     }
 
     void handleNonAuthMessage(ClientThread client, String msg) {
@@ -126,9 +142,17 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
             putLog("Invalid login attempt: " + login);
             client.authFail();
             return;
+        } else {
+            ClientThread oldClient = findClientByNickname(nickname);
+            client.authAccept(nickname);
+            if (oldClient == null) {
+                sendMessageAllClient(Library.getTypeBroadcast("Server", nickname + " connected"));
+            } else {
+                oldClient.reconnect();
+                vectorSocketClient.remove(oldClient);
+            }
         }
-        client.authAccept(nickname);
-        sendMessageAllClient(Library.getTypeBroadcast("Server", nickname + " connected"));
+        sendMessageAllClient(Library.getUserList(getUsers()));
     }
 
     @Override
@@ -147,5 +171,28 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
     }
 
     public void dropAllClients() {
+        for (SocketThread client : vectorSocketClient) {
+            client.close();
+        }
+    }
+
+    private synchronized String getUsers() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < vectorSocketClient.size(); i++) {
+            ClientThread client = (ClientThread) vectorSocketClient.get(i);
+            if (!client.isAuthorized()) continue;
+            sb.append(client.getNickname()).append(Library.DELIMITER);
+        }
+        return sb.toString();
+    }
+
+    private synchronized ClientThread findClientByNickname(String nickname) {
+        for (int i = 0; i < vectorSocketClient.size(); i++) {
+            ClientThread client = (ClientThread) vectorSocketClient.get(i);
+            if (!client.isAuthorized()) continue;
+            if (client.getNickname().equals(nickname))
+                return client;
+        }
+        return null;
     }
 }
