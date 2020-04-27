@@ -1,8 +1,11 @@
 package ru.gb.javatwo.chat.common;
 
 /*
-* Протокол обмена сообщениями между клиентом и сервером
-* */
+ * Протокол обмена сообщениями между клиентом и сервером
+ * */
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Library {
     /*
@@ -22,6 +25,16 @@ public class Library {
     // если мы вдруг не поняли, что за сообщение и не смогли разобрать
     public static final String TYPE_BROADCAST = "/bcast";
     // то есть сообщение, которое будет посылаться всем
+    public static final String TYPE_BCAST_CLIENT = "/client_msg";
+    public static final String USER_LIST = "/user_list";
+
+    public static String getTypeBcastClient(String msg) {
+        return TYPE_BCAST_CLIENT + DELIMITER + msg;
+    }
+
+    public static String getUserList(String users) {
+        return USER_LIST + DELIMITER + users;
+    }
 
     public static String getAuthRequest(String login, String password) {
         return AUTH_REQUEST + DELIMITER + login + DELIMITER + password;
@@ -43,4 +56,5 @@ public class Library {
         return TYPE_BROADCAST + DELIMITER + System.currentTimeMillis() +
                 DELIMITER + src + DELIMITER + message;
     }
+
 }
