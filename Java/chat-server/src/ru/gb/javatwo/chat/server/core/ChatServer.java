@@ -46,6 +46,7 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
     @Override
     public void onServerStarted(ServerSocketThread thread) {
         putLog("Server thread started");
+        SqlClient.connect();
     }
 
     @Override
@@ -75,6 +76,7 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
     public void onServerStop(ServerSocketThread thread) {
         putLog("Server thread stopped");
         dropAllClients();
+        SqlClient.disconnect();
     }
 
 
@@ -110,7 +112,8 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
         ClientThread client = (ClientThread) thread;
         if (client.isAuthorized()) {
             handleAuthMessage(client, msg);
-        }
+        } else
+            handleNonAuthMessage(client, msg);
     }
 
     void handleAuthMessage(ClientThread client, String msg) {
@@ -124,6 +127,32 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
             default:
                 client.sendMessage(Library.getMsgFormatError(msg));
         }
+    }
+
+    void handleNonAuthMessage(ClientThread client, String msg) {
+        String[] arr = msg.split(Library.DELIMITER);
+        if (arr.length != 3 || !arr[0].equals(Library.AUTH_REQUEST)) {
+            client.msgFormatError(msg);
+            return;
+        }
+        String login = arr[1];
+        String password = arr[2];
+        String nickname = SqlClient.getNickname(login, password);
+        if (nickname == null) {
+            putLog("Invalid login attempt: " + login);
+            client.authFail();
+            return;
+        } else {
+            ClientThread oldClient = findClientByNickname(nickname);
+            client.authAccept(nickname);
+            if (oldClient == null) {
+                sendMessageAllClient(Library.getTypeBroadcast("Server", nickname + " connected"));
+            } else {
+                oldClient.reconnect();
+                vectorSocketClient.remove(oldClient);
+            }
+        }
+        sendMessageAllClient(Library.getUserList(getUsers()));
     }
 
     @Override
@@ -157,4 +186,13 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
         return sb.toString();
     }
 
+    private synchronized ClientThread findClientByNickname(String nickname) {
+        for (int i = 0; i < vectorSocketClient.size(); i++) {
+            ClientThread client = (ClientThread) vectorSocketClient.get(i);
+            if (!client.isAuthorized()) continue;
+            if (client.getNickname().equals(nickname))
+                return client;
+        }
+        return null;
+    }
 }

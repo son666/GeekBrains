@@ -91,6 +91,7 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         } else if (obj == btnSend || obj == tfMessage) {
             sendToLogMessage();
         } else if (obj == btnLogin) {
+            connect();
         } else if (obj == btnDisconnect) {
             disConnect();
         } else {
@@ -98,6 +99,14 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         }
     }
 
+    private void connect() {
+        try {
+            Socket socket = new Socket(tfIPAddress.getText(), Integer.parseInt(tfPort.getText()));
+            socketThread = new SocketThread(this, tfLogin.getText(), socket);
+        } catch (IOException e) {
+            showException(Thread.currentThread(), e);
+        }
+    }
 
     private void disConnect() {
         socketThread.close();
@@ -185,6 +194,7 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         putLog("Ready");
         String login = tfLogin.getText();
         String password = new String(tfPassword.getPassword());
+        thread.sendMessage(Library.getAuthRequest(login, password));
     }
 
     @Override
@@ -201,7 +211,12 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         String[] arr = value.split(Library.DELIMITER);
         String msgType = arr[0];
         switch (msgType) {
-
+            case Library.AUTH_ACCEPT:
+                setTitle(WINDOW_TITLE + " authorized with nickname " + arr[1]);
+                break;
+            case Library.AUTH_DENIED:
+                putLog(value);
+                break;
             case Library.MSG_FORMAT_ERROR:
                 putLog(value);
                 socketThread.close();
