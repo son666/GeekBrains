@@ -124,6 +124,17 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
                 sendMessageAllClient(Library.getTypeBroadcast(
                         client.getNickname(), arr[1]));
                 break;
+            case Library.CHANGE_LOGIN_REQUEST:
+                String login = arr[1];
+                String newNickName = arr[2];
+                String password = arr[3];
+                String oldNickName = SqlClient.getNickname(login, password);
+                String newNick = SqlClient.changeNickname(login, newNickName, password);
+                if (newNick == null) return;
+                client.setNickName(newNick);
+                sendMessageAllClient(Library.getTypeBroadcast("Server",  oldNickName + " change Nick to " + newNick));
+
+                break;
             default:
                 client.sendMessage(Library.getMsgFormatError(msg));
         }

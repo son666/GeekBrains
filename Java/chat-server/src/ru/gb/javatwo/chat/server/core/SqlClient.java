@@ -28,6 +28,19 @@ public class SqlClient {
         return null;
     }
 
+    synchronized static String changeNickname(String login, String newNickName, String password) {
+        String query = String.format("UPDATE users SET nickname = '%s' WHERE login = '%s' AND password = '%s'", newNickName, login, password);
+        try {
+            int count = statement.executeUpdate(query);
+            if (count > 0) {
+                return newNickName;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
     synchronized static void disconnect() {
         try {
             connection.close();

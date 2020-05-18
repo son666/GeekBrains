@@ -28,10 +28,14 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
     private final JPasswordField tfPassword = new JPasswordField("123");
     private final JButton btnLogin = new JButton("Login");
 
-    private final JPanel panelBottom = new JPanel(new BorderLayout());
+    private final JPanel panelBottom = new JPanel(new GridLayout(2, 3));
     private final JButton btnDisconnect = new JButton("<html><b>Disconnect</b></html>");
     private final JTextField tfMessage = new JTextField();
     private final JButton btnSend = new JButton("Send");
+    //Change Login
+    private final JLabel lbChangeNick = new JLabel("Новый Ник");
+    private final JTextField tfNewNickName = new JTextField();
+    private final JButton btnChangeNickName = new JButton("Change Nick");
 
     private final JList<String> userList = new JList<>();
     private SocketThread socketThread;
@@ -64,6 +68,7 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         btnSend.addActionListener(this);
         tfMessage.addActionListener(this);
         btnLogin.addActionListener(this);
+        btnChangeNickName.addActionListener(this);
         btnDisconnect.addActionListener(this);
 
         panelTop.add(tfIPAddress);
@@ -72,9 +77,14 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         panelTop.add(tfLogin);
         panelTop.add(tfPassword);
         panelTop.add(btnLogin);
-        panelBottom.add(btnDisconnect, BorderLayout.WEST);
-        panelBottom.add(tfMessage, BorderLayout.CENTER);
-        panelBottom.add(btnSend, BorderLayout.EAST);
+
+        panelBottom.add(btnDisconnect);
+        panelBottom.add(tfMessage);
+        panelBottom.add(btnSend);
+        panelBottom.add(lbChangeNick);
+        panelBottom.add(tfNewNickName);
+        panelBottom.add(btnChangeNickName);
+
         add(scrUser, BorderLayout.EAST);
         add(scrLog, BorderLayout.CENTER);
         add(panelTop, BorderLayout.NORTH);
@@ -92,6 +102,8 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
             sendToLogMessage();
         } else if (obj == btnLogin) {
             connect();
+        } else if (obj == btnChangeNickName) {
+            changeNickName();
         } else if (obj == btnDisconnect) {
             disConnect();
         } else {
@@ -106,6 +118,15 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         } catch (IOException e) {
             showException(Thread.currentThread(), e);
         }
+    }
+
+    private void changeNickName() {
+        String newNickName = tfNewNickName.getText();
+        String login = tfLogin.getText();
+        String password = new String(tfPassword.getPassword());
+        if ("".equals(newNickName)) return;
+        socketThread.sendMessage(Library.getChangeLoginRequest(login, newNickName, password));
+        tfNewNickName.setText(null);
     }
 
     private void disConnect() {

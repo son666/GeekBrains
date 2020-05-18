@@ -28,6 +28,8 @@ public class Library {
     public static final String TYPE_BCAST_CLIENT = "/client_msg";
     public static final String USER_LIST = "/user_list";
 
+    public static final String CHANGE_LOGIN_REQUEST = "/change_login_request";
+
     public static String getTypeBcastClient(String msg) {
         return TYPE_BCAST_CLIENT + DELIMITER + msg;
     }
@@ -55,6 +57,10 @@ public class Library {
     public static String getTypeBroadcast(String src, String message) {
         return TYPE_BROADCAST + DELIMITER + System.currentTimeMillis() +
                 DELIMITER + src + DELIMITER + message;
+    }
+
+    public static String getChangeLoginRequest(String login, String newNickName, String password) {
+        return CHANGE_LOGIN_REQUEST + DELIMITER + login + DELIMITER + newNickName + DELIMITER + password;
     }
 
 }
