@@ -8,12 +8,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedInputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
+import java.util.*;
+import java.util.List;
 
 public class ClientGUI extends JFrame implements ActionListener, Thread.UncaughtExceptionHandler, SocketThreadListener {
     private static final int WIDTH = 400;
@@ -168,8 +171,36 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
             public void run() {
                 log.append(message + System.lineSeparator());
                 log.setCaretPosition(log.getDocument().getLength());
+                saveToFile(message);
             }
         });
+    }
+
+    private void saveToFile(String msg) {
+        try (FileWriter fileWriter = new FileWriter("E:\\logChat.txt", true)) {
+            fileWriter.write(msg + System.lineSeparator());
+            fileWriter.flush();
+        } catch (IOException e) {
+            uncaughtException(Thread.currentThread(), e);
+        }
+    }
+    private void readFromLogFile(int countLine) {
+        List<String> lineString = new ArrayList<>();
+        List<String> resultList = new ArrayList<>();
+        StringBuilder message = new StringBuilder("");
+        try (Scanner fileReader = new Scanner(new FileReader("E:\\logChat.txt"))) {
+            while (fileReader.hasNext()) {
+                lineString.add(fileReader.nextLine());
+            }
+            resultList.addAll((lineString.size() > countLine) ? lineString.size() - countLine : 0, lineString);
+            for (String lineLog : resultList) {
+                message.append(lineLog + System.lineSeparator());
+            }
+            log.append(message + System.lineSeparator());
+            log.setCaretPosition(log.getDocument().getLength());
+        } catch (Exception e) {
+            uncaughtException(Thread.currentThread(), e);
+        }
     }
 
     private void reversVisiblePanel() {
@@ -188,6 +219,7 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
 
     @Override
     public void onSocketStart(SocketThread thread, Socket socket) {
+        readFromLogFile(100);
         putLog("Start");
     }
 
