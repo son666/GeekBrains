@@ -159,7 +159,6 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         tfMessage.setText(null);
         tfMessage.requestFocusInWindow();
         socketThread.sendMessage(Library.getTypeBcastClient(msg));
-//        saveToFile(msg, user);
     }
 
     private void putLog(String message) {
@@ -171,15 +170,6 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
                 log.setCaretPosition(log.getDocument().getLength());
             }
         });
-    }
-
-    private void saveToFile(String msg, String user) {
-        try (FileWriter fileWriter = new FileWriter("E:\\logChat.txt", true)) {
-            fileWriter.write(user + " : " + msg + System.lineSeparator());
-            fileWriter.flush();
-        } catch (IOException e) {
-            uncaughtException(Thread.currentThread(), e);
-        }
     }
 
     private void reversVisiblePanel() {
