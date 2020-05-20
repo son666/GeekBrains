@@ -20,6 +20,10 @@ public class ClientThread extends SocketThread {
         return nickname;
     }
 
+    public void setNickName(String nickname) {
+        this.nickname = nickname;
+    }
+
     public boolean isAuthorized() {
         return isAuthorized;
     }
@@ -33,6 +37,16 @@ public class ClientThread extends SocketThread {
         close();
     }
 
+    public void authAccept(String nickname) {
+        isAuthorized = true;
+        this.nickname = nickname;
+        sendMessage(Library.getAuthAccept(nickname));
+    }
+
+    public void authFail() {
+        sendMessage(Library.getAuthDenied());
+        close();
+    }
 
     public void msgFormatError(String msg) {
         sendMessage(Library.getMsgFormatError(msg));
