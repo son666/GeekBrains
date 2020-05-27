@@ -9,6 +9,8 @@ import ru.gb.javatwo.network.SocketThreadListener;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Vector;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ChatServer implements ServerSocketThreadListener, SocketThreadListener {
 
@@ -63,7 +65,14 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
     public void onSocketAccepted(ServerSocketThread thread, ServerSocket server, Socket socket) {
         putLog("Client connected");
         String name = "SocketThread " + socket.getInetAddress() + ":" + socket.getPort();
-        new ClientThread(this, name, socket);
+        ChatServer chatServer = this;
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        executorService.execute(new Runnable() {
+            public void run() {
+                new ClientThread(chatServer, name, socket);
+            }
+        });
+        executorService.shutdown();
     }
 
     @Override
