@@ -11,8 +11,12 @@ import java.net.Socket;
 import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ChatServer implements ServerSocketThreadListener, SocketThreadListener {
+
+    private static final Logger logger = Logger.getLogger(ChatServer.class.getName());
 
     ServerSocketThread server;
     private Vector<SocketThread> vectorSocketClient = new Vector();
@@ -23,8 +27,10 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
     }
 
     public void start(int port) {
-        if (server != null && server.isAlive())
+        if (server != null && server.isAlive()) {
             putLog("Already running");
+            logger.log(Level.INFO, "Already running");
+        }
         else
             server = new ServerSocketThread(this, "Server", port, 2000);
     }
@@ -32,6 +38,7 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
     public void stop() {
         if (server == null || !server.isAlive()) {
             System.out.println("Nothing to stop");
+            logger.log(Level.INFO, "Nothing to stop");
         } else {
             server.interrupt();
         }
@@ -39,6 +46,7 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
 
     private void putLog(String msg) {
         listener.onChatServerMessage(msg);
+        logger.log(Level.INFO, msg);
     }
 
     /**
@@ -54,6 +62,7 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
     @Override
     public void onServerCreated(ServerSocketThread thread, ServerSocket server) {
         putLog("Server socket started");
+
     }
 
     @Override
@@ -177,6 +186,7 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
 
     @Override
     public void onSocketException(SocketThread thread, Throwable throwable) {
+        logger.log(Level.INFO, "Socket Exception");
         throwable.printStackTrace();
     }
 
@@ -186,6 +196,7 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
                 ClientThread client = (ClientThread) socketClient;
                 if (!client.isAuthorized()) continue;
                 client.sendMessage(msg);
+                logger.log(Level.INFO, msg);
             }
         }
     }
@@ -193,6 +204,7 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
     public void dropAllClients() {
         for (SocketThread client : vectorSocketClient) {
             client.close();
+            logger.log(Level.INFO, "Drop All Client");
         }
     }
 
