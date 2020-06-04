@@ -20,7 +20,7 @@ public class MainClass {
             }
         }
 
-        methods.sort((o1, o2) -> -o1.getAnnotation(Test.class).priority() - o2.getAnnotation(Test.class).priority());
+        methods.sort((o1, o2) -> -(o1.getAnnotation(Test.class).priority() - o2.getAnnotation(Test.class).priority()));
 
         for (Method method : cl.getDeclaredMethods()) {
             if (method.isAnnotationPresent(BeforeSuite.class)) {

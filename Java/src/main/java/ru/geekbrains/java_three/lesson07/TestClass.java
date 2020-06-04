@@ -12,6 +12,11 @@ public class TestClass {
         System.out.println("@BeforeSuite M2");
     }
 
+    @AfterSuite
+    public static void method6() {
+        System.out.println("@AfterSuite M6");
+    }
+
     @Test(priority = 10)
     public static void method3() {
         System.out.println("M3");
@@ -25,5 +30,6 @@ public class TestClass {
     public static void method5() {
         System.out.println("M5");
     }
+
 
 }
