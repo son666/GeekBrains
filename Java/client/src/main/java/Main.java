@@ -18,16 +18,15 @@ public class Main extends Application {
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
-        primaryStage.setOnCloseRequest(event -> {
-            try {
-                Controller.socket.getOutputStream().write("close".getBytes());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Platform.exit();
-        });
+//        primaryStage.setOnCloseRequest(event -> {
+//            try {
+//                Controller.socket.getOutputStream().write("close".getBytes());
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            Platform.exit();
+//        });
     }
-
 
     public static void main(String[] args) {
         launch(args);

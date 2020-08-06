@@ -8,15 +8,18 @@ public class ConnectionHandler implements Runnable {
 
     private DataInputStream is;
     private DataOutputStream os;
+    private ObjectInputStream ois; // file -> ois ->
 
     public ConnectionHandler(Socket socket) throws IOException, InterruptedException {
         System.out.println("Connection accepted");
         is = new DataInputStream(socket.getInputStream());
         os = new DataOutputStream(socket.getOutputStream());
         Thread.sleep(2000);
+//        Object msg = ois.readObject();
+//        if (msg instanceof File) {
+//
+//        }
     }
-
-
 
     @Override
     public void run() {
