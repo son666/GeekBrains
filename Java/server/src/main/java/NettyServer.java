@@ -11,7 +11,7 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
 
 public class NettyServer {
 
-    public final static String serverPath = "E:\\GitGeekBrains\\Java\\server\\src\\main\\resources";
+    public final static String serverPath = "C:\\Users\\Dell\\GitGeekBrains\\Java\\server\\src\\main\\resources";
 
     public NettyServer() {
         EventLoopGroup auth = new NioEventLoopGroup(1);
